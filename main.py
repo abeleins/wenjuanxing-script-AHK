@@ -7,8 +7,8 @@ from selenium.webdriver.common.by import By
 import json
 
 # 问卷地址
-url = 'https://www.wjx.cn/vm/toSEz3j.aspx#'
-number = 1
+url = 'https://www.wjx.cn/vm/Q0IdCwo.aspx'
+number = 10
 # 滑动轨迹
 tracks = [i for i in range(1, 50, 3)]
 
@@ -34,13 +34,26 @@ configs = read_json()
 # 单选
 
 
+# def radio(config, index):
+#     xpath = f'//*[@id="div{index}"]/*[@class="ui-controlgroup column1"]/div'
+#     a = driver.find_elements(By.XPATH, xpath)
+#     r = numpy.random.choice(a=numpy.arange(1, len(a) + 1), p=config['PR'])
+#     driver.find_element(By.CSS_SELECTOR,
+#                         f'#div{index} > div.ui-controlgroup > div:nth-child({r})').click()
 def radio(config, index):
     xpath = f'//*[@id="div{index}"]/*[@class="ui-controlgroup column1"]/div'
     a = driver.find_elements(By.XPATH, xpath)
     r = numpy.random.choice(a=numpy.arange(1, len(a) + 1), p=config['PR'])
-    driver.find_element(By.CSS_SELECTOR,
-                        f'#div{index} > div.ui-controlgroup > div:nth-child({r})').click()
+    element = driver.find_element(By.CSS_SELECTOR, f'#div{index} > div.ui-controlgroup > div:nth-child({r})')
 
+    # 创建一个 ActionChains 对象
+    actions = ActionChains(driver)
+
+    # 使用 move_to_element 方法将视口滚动到元素
+    actions.move_to_element(element).perform()
+
+    # 点击元素
+    element.click()
 # 多选
 
 
@@ -130,13 +143,17 @@ def run():
                 sort(config, index)
             case 7:
                 fun1(config, index)
-    # driver.find_element(By.XPATH, '//*[@id="ctlNext"]').click()
+            #提交
+    driver.find_element(By.XPATH, '//*[@id="ctlNext"]').click()
     time.sleep(1)
-    driver.find_element(
-        By.XPATH, '//*[@id="layui-layer1"]/div[3]/a[1]').click()
-    time.sleep(0.5)
-    driver.find_element(By.XPATH, '//*[@id="SM_BTN_1"]').click()
-    time.sleep(4)
+    try:
+        driver.find_element(
+            By.XPATH, '//*[@id="layui-layer1"]/div[3]/a[1]').click()
+        time.sleep(0.5)
+        driver.find_element(By.XPATH, '//*[@id="SM_BTN_1"]').click()
+        time.sleep(4)
+    except:
+        pass
     # 滑块验证
     try:
         slider = driver.find_element(
